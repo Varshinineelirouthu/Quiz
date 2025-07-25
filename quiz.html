@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Game</title>
+  <style>
+    /* Basic page styling */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .quiz-container {
+      background: #fff;
+      padding: 20px 30px;
+      width: 400px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .quiz-header {
+      margin-bottom: 20px;
+    }
+    h2 {
+      margin-bottom: 15px;
+    }
+    .option {
+      margin: 8px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .option:hover {
+      background: #f9f9f9;
+    }
+    .selected {
+      background: #d1ffd1;
+      border-color: #28a745;
+    }
+    .quiz-footer {
+      text-align: right;
+    }
+    .quiz-button {
+      background: #28a745;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+    .quiz-button:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <div class="quiz-header">
+      <h2 id="question">Question Text</h2>
+      <div id="options">
+        <!-- Options will be dynamically inserted here -->
+      </div>
+    </div>
+    <div class="quiz-footer">
+      <button class="quiz-button" id="nextButton" onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+
+  <script>
+    // Array of quiz questions
+    const quizData = [
+      {
+        question: "What is the capital of France?",
+        options: ["Berlin", "London", "Paris", "Madrid"],
+        answer: "Paris"
+      },
+      {
+        question: "Which language runs in a web browser?",
+        options: ["Java", "C", "Python", "JavaScript"],
+        answer: "JavaScript"
+      },
+      {
+        question: "What does CSS stand for?",
+        options: ["Central Style Sheets", "Cascading Style Sheets", "Cascading Simple Sheets", "Cars SUVs Sailboats"],
+        answer: "Cascading Style Sheets"
+      },
+      {
+        question: "What does HTML stand for?",
+        options: ["HyperText Markup Language", "HyperText Makeup Language", "Hyperloop Machine Language", "Helicopters Terminals Motorboats Lamborghinis"],
+        answer: "HyperText Markup Language"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedOption = null;
+
+    // Function to load the current question and its options
+    function loadQuestion() {
+      selectedOption = null; // Reset selected option
+      const questionEl = document.getElementById("question");
+      const optionsEl = document.getElementById("options");
+
+      // Clear previous options
+      optionsEl.innerHTML = "";
+
+      // Get the current question data
+      const qData = quizData[currentQuestion];
+      questionEl.textContent = qData.question;
+
+      // Create option elements dynamically
+      qData.options.forEach(option => {
+        const optionDiv = document.createElement("div");
+        optionDiv.textContent = option;
+        optionDiv.className = "option";
+        optionDiv.onclick = function() {
+          // Remove the 'selected' style from all options
+          const optionDivs = document.querySelectorAll(".option");
+          optionDivs.forEach(div => div.classList.remove("selected"));
+          // Add 'selected' style to clicked option
+          optionDiv.classList.add("selected");
+          selectedOption = option;
+        };
+        optionsEl.appendChild(optionDiv);
+      });
+    }
+
+    // Function to move to the next question
+    function nextQuestion() {
+      if (selectedOption === null) {
+        alert("Please select an answer.");
+        return;
+      }
+      // Check if the selected option is correct
+      if (selectedOption === quizData[currentQuestion].answer) {
+        score++;
+      }
+      currentQuestion++;
+
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    // Function to display the final result
+    function showResult() {
+      const quizContainer = document.querySelector(".quiz-container");
+      quizContainer.innerHTML = `<h2>You scored ${score} out of ${quizData.length}!</h2>`;
+    }
+
+    // Initialize quiz with the first question
+    loadQuestion();
+  </script>
+</body>
+</html>
